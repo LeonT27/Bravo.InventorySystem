@@ -66,7 +66,7 @@ namespace Application.Services.ProductService
             var validateFilter = await new ProductHistoryFilterValidation().ValidateAsync(filter);
 
             if (!validateFilter.IsValid) throw new ValidationException(validateFilter.Errors);
-
+            
             return FilterBy(history, filter);
         }
 
@@ -105,6 +105,11 @@ namespace Application.Services.ProductService
 
             if (transactionType is null) throw new NotFoundException("tipo", command.TransactionTypeId);
 
+            var productQuantity = command.Quantity;
+            if (transactionType.Operation == '-') productQuantity *= -1;
+
+            product.Quantity += productQuantity;
+
             _model.Transactions.Add(_mapper.Map<Transaction>(command));
 
             await _model.SaveChangesAsync();
@@ -115,8 +120,9 @@ namespace Application.Services.ProductService
             return list
                 .Where(w =>
                     w.Unit.Contains(filter.Unit ?? string.Empty, StringComparison.CurrentCultureIgnoreCase)
-                    || w.ProductName.Contains(filter.ProductName ?? string.Empty, StringComparison.CurrentCultureIgnoreCase)
-                    || w.Purpose.Contains(filter.Purpose ?? string.Empty, StringComparison.CurrentCultureIgnoreCase))
+                    && w.ProductName.Contains(filter.ProductName ?? string.Empty, StringComparison.CurrentCultureIgnoreCase)
+                    && w.Purpose.Contains(filter.Purpose ?? string.Empty, StringComparison.CurrentCultureIgnoreCase)
+                    && w.TransactionType.Contains(filter.TransactionType ?? string.Empty, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
         }
     }
