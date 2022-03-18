@@ -4,6 +4,7 @@
     {
         public string Purpose { get; set; }
         public string ProductName { get; set; }
+        public string TransactionType { get; set; }
         public string Unit { get; set; }
     }
 }
