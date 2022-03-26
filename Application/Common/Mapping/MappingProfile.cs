@@ -1,4 +1,5 @@
 ﻿using Application.Services.ProductService.Dto;
+using Application.Services.UnitService.Dto;
 using AutoMapper;
 using Domain.Entities;
 
@@ -22,6 +23,8 @@ namespace Application.Common.Mapping
             CreateMap<InsertProductCommand, Product>();
 
             CreateMap<InsertProductTransactionCommand, Transaction>();
+
+            CreateMap<Unit, UnitDto>();
         }
     }
 }
